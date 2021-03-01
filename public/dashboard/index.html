@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>task-schedule</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./tachyons.css">
+    <link rel="stylesheet" href="./xterm.css">
+    <link rel="stylesheet" href="./style.css">
+    <script>
+        var socket = undefined;
+    </script>
+</head>
+
+<body class="helvetica">
+    <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+    <header id="header" class="100vw bg-near-black near-white shadow-4">
+        <div class="flex items-center justify-between pa2">
+            <span class="f4 w-30 fw5">task-schedule</span>
+            <div class="w-0 w-20-m"></div>
+            <div class="f6 fw5">
+                <a id="schedule-button" href="#0" class="link near-white button pa2 dim bg-dark-gray">Schedule</a>
+                <a id="settings-button" href="#0" class="link near-white button pa2 dim">Settings</a>
+                <a id="terminal-button" href="#0" class="link near-white button pa2 dim">Terminal</a>
+            </div>
+        </div>
+    </header>
+    <main class="flex flex-column pa2 pa4-m">
+
+        <section id="schedule">
+            <div class="" id="guard">
+                <div class="b--black-20 ba pa2 db">
+                    <div id="visualization" class="b--black-20 ba pa2"></div>
+
+                    <div class="pa2 mv2 flex items-start ">
+                        <a href="#0" class="f6 link dim ba bw1 ph3 pv2 ma2 dib blue" id="add-event">Ereigniss Hinzufügen</a>
+                        <a href="#0" class="f6 link dim ba bw1 ph3 pv2 ma2 dib near-black" id="toggle-rolling">Start</a>
+                    </div>
+
+                    <form id="edit" class="pa2 mv2 black-80 ba b--black-20">
+                        <label for="edit-name" class="f6 b db mb2">Name <span class="normal black-60">(optional)</span></label>
+                        <input id="edit-name" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text">
+                        <!-- <small id="name-desc" class="f6 black-60 db mb2">Helper text for the form control.</small> -->
+
+                        <div class="b--black-20 ba pa2">
+                            <label for="edit-start" class="f6 b db mb2">Start</label>
+                            <div class="input-icon">
+                                <div class="input-icon">
+                                    <input id="edit-start" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text">
+                                    <span class="silver">s</span>
+                                </div>
+                                <label for="edit-duration" class="f6 b db mb2">Dauer</label>
+                                <div class="input-icon">
+                                    <input id="edit-duration" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text">
+                                    <span class="silver">s</span>
+                                </div>
+                            </div>
+
+                            <div id="custom-command" class="b--black-20 ba pa2 dn">
+                                <label for="edit-command" class="f6 b db mb2">Kommando</label>
+                                <input id="edit-command" class="courier input-reset ba b--black-20 pa2 mb2 db w-100" type="text">
+                                <label for="edit-retrigger" class="f6 b db mb2">Retrigger</label>
+                                <input id="edit-retrigger" class="ba b--black-20 pa2 mb2 db" type="checkbox">
+                                <small id="edit-retrigger-desc" class="f6 black-60 mb2 db">
+                            Endet das Kommando inerhalb der geplanten Zeit, wird der Befehl wieder ausgeführt.</small>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section id="settings" hidden>
+
+            <form class="pa2 mv2 ba b--black-20">
+                <div class="b--black-20 ba pa2 mb2 db">
+                    <h4 class="f5 b mb2 mt0">Logging</h4>
+                    <label for="logs-save" class="f6 b db mb2">Logs speichern</label>
+                    <input id="logs-save" class="ba b--black-20 pa2 mb2 db" type="checkbox">
+                    <label for="logs-stdout" class="f6 b db mb2">Kommando Stdout speichern</label>
+                    <input id="logs-stdout" class="ba b--black-20 pa2 mb2 db" type="checkbox">
+                </div>
+                <div class="b--black-20 ba pa2 mb2 db">
+                    <h4 class="f5 b mb2 mt0">Nextcloud</h4>
+                    <label for="cloud-url" class="f6 b db mb2">Nextcloud URL</label>
+                    <input id="cloud-url" class="courier input-reset ba b--black-20 pa2 mb2 db w-100" type="text">
+                    <label for="cloud-name" class="f6 b db mb2">Nextcloud Username <span
+                            class="normal black-60">(optional)</span></label>
+                    <input id="cloud-name" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text">
+                    <!-- <small id="name-desc" class="f6 black-60 db mb2">Helper text for the form control.</small> -->
+                    <label for="cloud-passwd" class="f6 b db mb2">Nextcloud Password <span
+                            class="normal black-60">(optional)</span></label>
+                    <input id="cloud-passwd" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="password">
+                    <!-- <small id="name-desc" class="f6 black-60 db mb2">Helper text for the form control.</small> -->
+                </div>
+                <div class="b--black-20 ba pa2 mb2 db">
+                    <h4 class="f5 b mb2 mt0">Sync</h4>
+                    <div class="b--black-20 ba pa2 db">
+                        <h4 class="f6 b mb2 mt0">GPIO</h4>
+                        <label for="gpio-pin" class="f6 b db mb2">Pin</label>
+                        <input id="gpio-pin" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="number">
+                        <label for="gpio-active" class="f6 b db mb2">Aktiv</label>
+                        <select id="gpio-active">
+                            <option value="high">Puls High</option>
+                            <option value="low">Puls Low</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <section id="terminal" hidden>
+
+            <div id="terminal-container"></div>
+
+        </section>
+
+    </main>
+
+    <script src="./dist/bundle.js" async defer></script>
+</body>
+
+</html>

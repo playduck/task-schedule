@@ -38,12 +38,28 @@ let settings = {
     }
 };
 
+if (!fs.existsSync("./download")) {
+    fs.mkdir("./download")
+}
 fs.readFile(settingsFile, 'utf-8', (err, file) => {
     if (!err) {
         settings = JSON.parse(file);
         console.log(settings);
     }
 });
+
+//https://stackoverflow.com/a/42182416/12231900
+function deleteFolderRecursive(directory) {
+    fs.readdir(directory, (err, files) => {
+        if (err) throw err;
+
+        for (const file of files) {
+            fs.unlink(path.join(directory, file), err => {
+                if (err) throw err;
+            });
+        }
+    });
+};
 
 function writeStream(id, message) {
     const time = (new Date()).getTime();
@@ -82,17 +98,20 @@ function addActual(actual) {
 
 function commandDone(idx) {
     data[idx].userData.actual.end = (new Date()).getTime() - startTime;
-    addActual(data[idx])
+    addActual(data[idx]);
     timeouts -= 1;
 
     if (timeouts == 0) {
-        clearInterval(interval);
         writeStream("----", `Execution done\r\n\r\n`);
+        clearInterval(interval);
         if (syncPin) {
-            syncPin.write(settings.sync.gpioActive == "high" ? 0 : 1)
+            syncPin.write(settings.sync.gpioActive == "high" ? 0 : 1);
         }
 
+        data = modifyAllCommands(data, false);
         io.emit("end", data);
+
+        deleteFolderRecursive("./download");
 
         proceses = [];
         if (settings.logging.logsSave) {
@@ -104,11 +123,35 @@ function commandDone(idx) {
     }
 }
 
-function execCommand(index, data) {
+function modifyAllCommands(d, forward) {
+    d.forEach(e => {
+        e = modifyCommand(e, forward);
+    });
+    return d;
+}
+
+function modifyCommand(d, forward) {
+    switch (d.userData.type) {
+        case "download":
+            if (forward) {
+                d.userData.command = d.userData.command.replace("NEXTCLOUD_USERNAME", settings.cloud.cloudName);
+                d.userData.command = d.userData.command.replace("NEXTCLOUD_PASSWORD", settings.cloud.cloudPasswd);
+                d.userData.command = d.userData.command.replace("NEXTCLOUD_URL", settings.cloud.cloudURL);
+            } else {
+                d.userData.command = d.userData.command.replace(settings.cloud.cloudName, "NEXTCLOUD_USERNAME");
+                d.userData.command = d.userData.command.replace(settings.cloud.cloudPasswd, "NEXTCLOUD_PASSWORD");
+                d.userData.command = d.userData.command.replace(settings.cloud.cloudURL, "NEXTCLOUD_URL");
+            }
+            break;
+    }
+    return d;
+}
+
+function execCommand(index, data, command) {
     console.log(`Starting Command Execution ${data.id}`);
     writeStream(data.id, "Starting Execution\r\n")
 
-    const child = exec(data.userData.command);
+    const child = exec(command);
     proceses[index] = (child);
 
     child.stdout.setEncoding('utf8');
@@ -130,7 +173,7 @@ function execCommand(index, data) {
 
             if (data.userData.retrigger) {
                 if (proceses[index] != undefined) {
-                    execCommand(index, data)
+                    execCommand(index, data, command);
                 }
             } else {
                 proceses[index] = undefined;
@@ -150,6 +193,8 @@ function handleData() {
         }) < 1) {
         return;
     }
+
+    data = modifyAllCommands(data, true)
 
     if (syncPin) {
         syncPin.write(settings.sync.gpioActive == "high" ? 1 : 0)
@@ -188,7 +233,7 @@ function handleData() {
                     }
                 }, (data[idx].end - data[idx].start));
 
-                execCommand(idx, data[idx]);
+                execCommand(idx, data[idx], data[idx].userData.command);
                 data[idx].userData.actual.start = (new Date()).getTime() - startTime;
 
             }, data[idx].start);
@@ -200,10 +245,12 @@ io.on("connection", (socket) => {
     console.log("connection from", socket.request.connection.remoteAddress);
 
     socket.on("data", (_data) => {
+        data = modifyAllCommands(data, false)
         data = _data;
         socket.broadcast.emit("data", data)
     })
     socket.on("start", (_data) => {
+        data = modifyAllCommands(data, false)
         data = _data;
         socket.broadcast.emit("data", data)
         handleData()

@@ -220,11 +220,10 @@ edit.addEventListener("input", (event) => {
         selectedItem.end = (edit.querySelector("#edit-start").value * 1000 +
             edit.querySelector("#edit-duration").value * 1000);
 
-        switch (selectedItem.className) {
-            case "custom":
-                selectedItem.userData["command"] = edit.querySelector("#edit-command").value
-                selectedItem.userData["retrigger"] = edit.querySelector("#edit-retrigger").checked
-        }
+
+        selectedItem.userData["command"] = edit.querySelector("#edit-command").value
+        selectedItem.userData["retrigger"] = edit.querySelector("#edit-retrigger").checked
+
 
         items.updateOnly(selectedItem)
         sendDataUpdate();
@@ -250,17 +249,13 @@ function handleEditBox() {
         edit.querySelector("#edit-start").disabled = !enable;
         edit.querySelector("#edit-duration").disabled = !enable;
 
-        switch (selectedItem.userData.type) {
-            case "custom":
-                edit.querySelector("#custom-command").classList.remove("dn");
-                edit.querySelector("#edit-command").value = selectedItem.userData["command"];
-                edit.querySelector("#edit-retrigger").checked = selectedItem.userData["retrigger"];
+        edit.querySelector("#custom-command").classList.remove("dn");
+        edit.querySelector("#edit-command").value = selectedItem.userData["command"];
+        edit.querySelector("#edit-retrigger").checked = selectedItem.userData["retrigger"];
 
-                edit.querySelector("#edit-command").disabled = !enable;
-                edit.querySelector("#edit-retrigger").disabled = !enable;
+        edit.querySelector("#edit-command").disabled = !enable;
+        edit.querySelector("#edit-retrigger").disabled = !enable;
 
-                break;
-        }
     } else {
         edit.classList.add("b--black-20");
         edit.classList.remove("b--yellow");
@@ -365,11 +360,8 @@ timeline.on('select', (properties) => {
 
 timeline.on("doubleClick", () => {});
 
-// timeline.on('*', (event, properties) => {
-//     console.log(event, properties);
-// });
 
-document.getElementById("add-event").onclick = () => {
+function addElement(type, command) {
     const start = findNextSlot();
     const nextId = findNextId();
 
@@ -378,17 +370,31 @@ document.getElementById("add-event").onclick = () => {
         group: 0,
         start: start,
         end: start + 10 * 1000,
-        content: nextId + " custom",
-        className: "custom",
+        content: `${nextId} ${type}`,
+        className: type,
         userData: {
-            type: "custom",
-            command: "ping -c 4 127.0.0.1",
+            type: type,
+            command: command,
             actual: {
                 start: -1000,
                 end: -100
             }
         }
     });
+}
+
+document.getElementById("add-custom").onclick = () => {
+    addElement("custom", "ping -c 4 127.0.0.1");
+};
+
+document.getElementById("add-download").onclick = () => {
+    addElement("download",
+        "nextcloudcmd --trust --user \"NEXTCLOUD_USERNAME\" --password \"NEXTCLOUD_PASSWORD\" ./download NEXTCLOUD_URL/download"
+    );
+};
+
+document.getElementById("add-video").onclick = () => {
+    addElement("video", "vlc --repeat ./download/DATEINAME");
 };
 
 document.getElementById("toggle-rolling").onclick = () => {

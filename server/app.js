@@ -150,7 +150,6 @@ function modifyCommand(d, forward) {
 function execCommand(index, data, command) {
     console.log(`Starting Command Execution ${data.id}`);
     writeStream(data.id, "Starting Execution\r\n")
-
     const child = exec(command);
     proceses[index] = (child);
 
@@ -245,20 +244,17 @@ io.on("connection", (socket) => {
     console.log("connection from", socket.request.connection.remoteAddress);
 
     socket.on("data", (_data) => {
-        data = modifyAllCommands(data, false)
-        data = _data;
+        data = modifyAllCommands(_data, false)
         socket.broadcast.emit("data", data)
     })
     socket.on("start", (_data) => {
-        data = modifyAllCommands(data, false)
-        data = _data;
+        data = modifyAllCommands(_data, false)
         socket.broadcast.emit("data", data)
         handleData()
     });
     socket.on("set-settings", (_settings) => {
         settings = _settings;
         socket.broadcast.emit("set-settings", settings);
-        console.log(settings)
 
         fs.writeFile(settingsFile, JSON.stringify(settings), (err) => {
             if (err) {

@@ -256,9 +256,9 @@ io.on("connection", (socket) => {
         handleData()
     });
     socket.on("set-settings", (_settings) => {
-        settings = _settings
-        const { _, ...settingsBr } = {..._settings };
-        socket.broadcast.emit("set-settings", settingsBr);
+        settings = _settings;
+        socket.broadcast.emit("set-settings", settings);
+        console.log(settings)
 
         fs.writeFile(settingsFile, JSON.stringify(settings), (err) => {
             if (err) {
@@ -279,8 +279,7 @@ io.on("connection", (socket) => {
 
     });
 
-    const { _, ...settingsBr } = {...settings };
-    socket.emit("set-settings", settingsBr);
+    socket.emit("set-settings", settings);
     socket.emit("data", data);
 });
 

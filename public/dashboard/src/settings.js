@@ -6,7 +6,7 @@ function setSettings(_settings) {
 
     settingsDom.querySelector("#cloud-url").value = _settings.cloud.cloudURL;
     settingsDom.querySelector("#cloud-name").value = _settings.cloud.cloudName;
-    settingsDom.querySelector("#cloud-passwd").value = _settings.cloud.cloudPasswd;
+    // settingsDom.querySelector("#cloud-passwd").value = _settings.cloud.cloudPasswd;
 
     settingsDom.querySelector("#gpio-pin").value = _settings.sync.gpioPin;
     settingsDom.querySelector("#gpio-active").value = _settings.sync.gpioActive;

@@ -3,7 +3,7 @@
 }
 
 .epoch {
-    background-color: #19A974!important;
+    background-color: #CCCCCC!important;
     width: .125rem!important;
     cursor: default!important;
 }
@@ -12,24 +12,29 @@
     border-width: .125rem!important;
 }
 
-.vis-item.custom {
-    /* background-color: #357eddc0!important; */
-    border-color: #00449E!important;
-    /* color: #F4F4F4!important; */
+.custom {
+    background-color: #333333!important;
+    border-color: #777777!important;
+    color: #F4F4F4!important;
 }
 
-.vis-item.video {
-    background-color: #ffffffc0!important;
-    border-color: #001B44!important;
-    color: #001B44!important;
+.download {
+    background-color: #00449E!important;
+    border-color: #357EDD!important;
+    color: #FFFFFF!important;
+}
+
+.video {
+    background-color: #5E2CA5!important;
+    border-color: #A463F2!important;
+    color: #F6FFFE!important;
 }
 
 .vis-item.vis-selected {
-    /* background-color: #ffffff!important; */
-    border-color: #FFB700!important;
+    background-color: #FFD700!important;
+    /* border-color: #FFB700!important; */
     color: #111111!important;
     box-shadow: 2px 2px 4px 2px rgba( 0, 0, 0, 0.2);
-    /* color: #001B44!important; */
 }
 
 .vis-item .vis-delete {
@@ -64,6 +69,7 @@
 .vis-item.actual {
     background-color: transparent!important;
     border-style: dashed!important;
+    color: black!important;
     z-index: 0!important;
 }
 

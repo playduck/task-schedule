@@ -34,23 +34,27 @@
             </div>
         </div>
     </header>
-    <main class="flex flex-column pa2 pa4-m">
+    <main class="flex flex-column">
 
         <section id="schedule">
             <div class="" id="guard">
-                <div class="b--black-20 ba pa2 db">
-                    <div id="visualization" class="b--black-20 ba pa2"></div>
+                <div class="flex flex-column">
 
-                    <div class="pa2 mv2 flex items-start ">
-                        <div class="flex items-start black-80 ba b--black-20">
-                            <a href="#0" class="f6 link dim ba bw1 ph3 pv2 ma2 dib blue" id="add-custom">Kommando</a>
-                            <a href="#0" class="f6 link dim ba bw1 ph3 pv2 ma2 dib blue" id="add-download">Download</a>
-                            <a href="#0" class="f6 link dim ba bw1 ph3 pv2 ma2 dib blue" id="add-video">Video</a>
+                    <div class="pa2 db">
+                        <div id="visualization" class="pa2"></div>
+
+                        <div class="pa2 flex items-start ">
+                            <div class="flex items-start black-80 ba b--black-20">
+                                <a href="#0" class="f6 link dim ba bw1 br1 ph3 pv2 ma2 dib custom" id="add-custom">Kommando</a>
+                                <a href="#0" class="f6 link dim ba bw1 br1 ph3 pv2 ma2 dib download" id="add-download">Download</a>
+                                <a href="#0" class="f6 link dim ba bw1 br1 ph3 pv2 ma2 dib video" id="add-video">Video</a>
+                            </div>
+                            <a href="#0" class="f6 link dim ba bw1 br1 ph3 pv2 ma2 dib b--black bg-white near-black" id="fit-timeline">Fit</a>
+                            <a href="#0" class="f6 link dim ba bw1 br1 ph3 pv2 ma2 dib b--light-green bg-green near-white" id="toggle-rolling">Start</a>
                         </div>
-                        <a href="#0" class="f6 link dim ba bw1 ph3 pv2 ma2 dib near-black" id="toggle-rolling">Start</a>
                     </div>
 
-                    <form id="edit" class="pa2 mv2 black-80 ba b--black-20">
+                    <form id="edit" class="black-80 ba b--black-20 pa2 ma2">
                         <label for="edit-name" class="f6 b db mb2">Name <span class="normal black-60">(optional)</span></label>
                         <input id="edit-name" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text">
                         <!-- <small id="name-desc" class="f6 black-60 db mb2">Helper text for the form control.</small> -->
@@ -80,12 +84,12 @@
                         </div>
                     </form>
                 </div>
+
             </div>
         </section>
 
         <section id="settings" hidden>
-
-            <form class="pa2 mv2 ba b--black-20">
+            <form class="pa2">
                 <div class="b--black-20 ba pa2 mb2 db">
                     <h4 class="f5 b mb2 mt0">Logging</h4>
                     <label for="logs-save" class="f6 b db mb2">Logs speichern</label>
@@ -97,12 +101,10 @@
                     <h4 class="f5 b mb2 mt0">Nextcloud</h4>
                     <label for="cloud-url" class="f6 b db mb2">Nextcloud URL</label>
                     <input id="cloud-url" class="courier input-reset ba b--black-20 pa2 mb2 db w-100" type="text">
-                    <label for="cloud-name" class="f6 b db mb2">Nextcloud Username <span
-                            class="normal black-60">(optional)</span></label>
+                    <label for="cloud-name" class="f6 b db mb2">Nextcloud Username</label>
                     <input id="cloud-name" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text">
                     <!-- <small id="name-desc" class="f6 black-60 db mb2">Helper text for the form control.</small> -->
-                    <label for="cloud-passwd" class="f6 b db mb2">Nextcloud Password <span
-                            class="normal black-60">(optional)</span></label>
+                    <label for="cloud-passwd" class="f6 b db mb2">Nextcloud Password</label>
                     <input id="cloud-passwd" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="password">
                     <!-- <small id="name-desc" class="f6 black-60 db mb2">Helper text for the form control.</small> -->
                 </div>
@@ -124,7 +126,7 @@
 
         <section id="terminal" hidden>
 
-            <div id="terminal-container"></div>
+            <div class="pa2" id="terminal-container"></div>
 
         </section>
 

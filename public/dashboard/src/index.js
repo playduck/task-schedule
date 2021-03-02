@@ -397,6 +397,10 @@ document.getElementById("add-video").onclick = () => {
     addElement("video", "vlc --repeat ./download/DATEINAME");
 };
 
+document.getElementById("fit-timeline").onclick = () => {
+    timeline.fit();
+};
+
 document.getElementById("toggle-rolling").onclick = () => {
 
     const data = getItems();

@@ -39,7 +39,9 @@ let settings = {
 };
 
 if (!fs.existsSync("./download")) {
-    fs.mkdir("./download")
+    fs.mkdir("./download", (err) => {
+        console.log(err);
+    })
 }
 fs.readFile(settingsFile, 'utf-8', (err, file) => {
     if (!err) {
@@ -112,6 +114,14 @@ function commandDone(idx) {
         io.emit("end", data);
 
         deleteFolderRecursive("./download");
+        
+        const dirCont = fs.readdirSync("./");
+        const files = dirCont.filter( function( elm ) {return elm.match(/.*\.(db)/ig);});
+        if(files.length > 0)    {
+        fs.unlink(files[0], (err) => {
+            console.log(err)
+        });
+    }
 
         proceses = [];
         if (settings.logging.logsSave) {
@@ -150,6 +160,7 @@ function modifyCommand(d, forward) {
 function execCommand(index, data, command) {
     console.log(`Starting Command Execution ${data.id}`);
     writeStream(data.id, "Starting Execution\r\n")
+    console.log(command)
     const child = exec(command);
     proceses[index] = (child);
 

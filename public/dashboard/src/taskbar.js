@@ -1,3 +1,5 @@
+/* jshint esversion: 10 */
+
 function hideSections() {
     document.getElementById("schedule").hidden = true;
     document.getElementById("schedule-button").classList.remove("bg-dark-gray");

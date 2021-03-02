@@ -1,3 +1,5 @@
+/* jshint esversion: 10 */
+
 const settingsDom = document.getElementById("settings")
 
 function setSettings(_settings) {

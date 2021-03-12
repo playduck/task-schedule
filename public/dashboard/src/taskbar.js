@@ -12,28 +12,28 @@ function hideSections() {
 function initTaskbar(cb) {
 
     document.getElementById("schedule-button").onclick = () => {
-        hideSections()
+        hideSections();
         document.getElementById("schedule").hidden = false;
         document.getElementById("schedule-button").classList.add("bg-dark-gray");
         cb("schedule");
-    }
+    };
 
     document.getElementById("settings-button").onclick = () => {
-        hideSections()
+        hideSections();
         document.getElementById("settings").hidden = false;
         document.getElementById("settings-button").classList.add("bg-dark-gray");
         cb("settings");
-    }
+    };
 
     document.getElementById("terminal-button").onclick = () => {
-        hideSections()
+        hideSections();
         document.getElementById("terminal").hidden = false;
         document.getElementById("terminal-button").classList.add("bg-dark-gray");
         cb("terminal");
-    }
+    };
 
 }
 
 module.exports = {
     initTaskbar
-}
+};

@@ -1,6 +1,6 @@
 /* jshint esversion: 9 */
 
-const settingsDom = document.getElementById("settings")
+const settingsDom = document.getElementById("settings");
 
 function setSettings(_settings) {
     settingsDom.querySelector("#logs-save").checked = _settings.logging.logsSave;
@@ -31,7 +31,7 @@ function addSettingsEventListener(_socket) {
                     gpioPin: settingsDom.querySelector("#gpio-pin").value,
                     gpioActive: settingsDom.querySelector("#gpio-active").value
                 }
-            }
+            };
             // console.log(settings);
         _socket.emit("set-settings", settings);
     });
@@ -41,4 +41,4 @@ function addSettingsEventListener(_socket) {
 module.exports = {
     initSettings: addSettingsEventListener,
     setSettings: setSettings
-}
+};

@@ -4,6 +4,7 @@ dist/
 *.log
 settings.json
 .vscode/
+download/
 
 ### AUTO GENERATED GITIGNORE
 

@@ -5,6 +5,7 @@ dist/
 settings.json
 .vscode/
 download/
+node/
 
 ### AUTO GENERATED GITIGNORE
 

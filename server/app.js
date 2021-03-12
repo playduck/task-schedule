@@ -1,4 +1,4 @@
-/* jshint esversion: 20 */
+/* jshint esversion: 9 */
 
 const fs = require('fs');
 const path = require('path');

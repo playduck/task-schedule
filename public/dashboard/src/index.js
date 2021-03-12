@@ -1,3 +1,5 @@
+/* jshint esversion: 9 */
+
 const { initTaskbar } = require("./taskbar.js");
 const { initSettings, setSettings } = require("./settings.js");
 import { Timeline, DataSet } from "vis-timeline/standalone";

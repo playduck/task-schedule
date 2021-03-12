@@ -1,3 +1,5 @@
+/* jshint esversion: 9 */
+
 const path = require("path");
 
 const dashboardDir = "./public/dashboard";

@@ -395,7 +395,7 @@ document.getElementById("add-download").onclick = () => {
 };
 
 document.getElementById("add-video").onclick = () => {
-    addElement("video", "vlc --repeat ./download/DATEINAME");
+    addElement("video", "vlc --repeat ./download/*.mp4");
 };
 
 document.getElementById("fit-timeline").onclick = () => {

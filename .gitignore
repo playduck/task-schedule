@@ -1,5 +1,7 @@
 ### USER ADDED GITIGNORE
 
+app
+app.exe
 dist/
 *.log
 settings.json

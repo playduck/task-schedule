@@ -1,4 +1,4 @@
-/* jshint esversion: 10 */
+/* jshint esversion: 9 */
 
 const fs = require('fs');
 const path = require('path');
@@ -6,22 +6,22 @@ const express = require("express");
 const app = express();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
-const router = require("./router.js")
+const router = require("./router.js");
 const { exec } = require('child_process');
 const gpio = require('onoff').Gpio;
 
-const port = 3000
-const settingsFile = "settings.json"
+const port = 3000;
+const settingsFile = "settings.json";
 
 router.route(express, app);
 
 let startTime = 0;
-let data = []
-let proceses = []
+let data = [];
+let proceses = [];
 let timeouts = 0;
-let interval = undefined;
-let stream = undefined;
-let syncPin = undefined;
+let interval;
+let stream;
+let syncPin;
 let settings = {
     logging: {
         logsSave: true,
@@ -41,7 +41,7 @@ let settings = {
 if (!fs.existsSync("./download")) {
     fs.mkdir("./download", (err) => {
         console.log(err);
-    })
+    });
 }
 fs.readFile(settingsFile, 'utf-8', (err, file) => {
     if (!err) {
@@ -61,7 +61,7 @@ function deleteFolderRecursive(directory) {
             });
         }
     });
-};
+}
 
 function writeStream(id, message) {
     const time = (new Date()).getTime();
@@ -83,17 +83,17 @@ function addActual(actual) {
         className: `${actual.className} actual`,
         editable: false,
         userData: actual.userData
-    }
+    };
 
     const idx = data.findIndex((d) => {
-        console.log(d.id, obj.id, d.id == obj.id)
+        console.log(d.id, obj.id, d.id == obj.id);
         return d.id == obj.id;
-    })
-    console.log(idx)
+    });
+    console.log(idx);
     if (idx > -1) {
-        data[idx] = obj
+        data[idx] = obj;
     } else {
-        data.push(obj)
+        data.push(obj);
     }
 
 }
@@ -119,7 +119,7 @@ function commandDone(idx) {
         const files = dirCont.filter( function( elm ) {return elm.match(/.*\.(db)/ig);});
         if(files.length > 0)    {
         fs.unlink(files[0], (err) => {
-            console.log(err)
+            console.log(err);
         });
     }
 
@@ -159,8 +159,8 @@ function modifyCommand(d, forward) {
 
 function execCommand(index, data, command) {
     console.log(`Starting Command Execution ${data.id}`);
-    writeStream(data.id, "Starting Execution\r\n")
-    console.log(command)
+    writeStream(data.id, "Starting Execution\r\n");
+    console.log(command);
     const child = exec(command);
     proceses[index] = (child);
 
@@ -170,14 +170,14 @@ function execCommand(index, data, command) {
             const lines = chunk.split('\n');
             for (const l in lines) {
                 if (lines[l] != "")
-                    writeStream(data.id, lines[l] + "\r\n")
+                    writeStream(data.id, lines[l] + "\r\n");
             }
         }
         // console.log(chunk)
     });
 
     child.on('close', (code) => {
-        writeStream(data.id, `Execution ended with Code ${code}\r\n`)
+        writeStream(data.id, `Execution ended with Code ${code}\r\n`);
         console.log(`child process exited with code ${code}`);
         if (code != null) {
 
@@ -204,15 +204,15 @@ function handleData() {
         return;
     }
 
-    data = modifyAllCommands(data, true)
+    data = modifyAllCommands(data, true);
 
     if (syncPin) {
-        syncPin.write(settings.sync.gpioActive == "high" ? 1 : 0)
+        syncPin.write(settings.sync.gpioActive == "high" ? 1 : 0);
     }
 
     if (settings.logging.logsSave) {
         stream = fs.createWriteStream(path.join(__dirname, "../logs/", `output-${Math.floor((new Date()).getTime() / 1000)}.log`));
-        stream.write("Actual Timestamp ; Relative Timestamp ; ID ; Message\r\n")
+        stream.write("Actual Timestamp ; Relative Timestamp ; ID ; Message\r\n");
     }
 
     // assuming data is valid
@@ -222,19 +222,19 @@ function handleData() {
         io.emit("currentTime", {
             currentTime: (new Date()).getTime() - startTime
         });
-    }, 200)
+    }, 200);
 
     for (const idx in data) {
         if (data[idx].group == 0) {
             timeouts += 1;
-            setTimeout(() => {
+            setTimeout(() => { /* jshint ignore: line */
                 console.log("Starting Task", data[idx].id, data[idx].group);
-                writeStream(data[idx].id, "Starting Task\r\n")
+                writeStream(data[idx].id, "Starting Task\r\n");
 
                 setTimeout(() => {
                     if (proceses[idx] != undefined) {
                         console.log("Ending Task", data[idx].id);
-                        writeStream(data[idx].id, "Ending Task\r\n")
+                        writeStream(data[idx].id, "Ending Task\r\n");
 
                         proceses[idx].kill('SIGINT');
                         proceses[idx].kill('SIGKILL');
@@ -255,13 +255,13 @@ io.on("connection", (socket) => {
     console.log("connection from", socket.request.connection.remoteAddress);
 
     socket.on("data", (_data) => {
-        data = modifyAllCommands(_data, false)
-        socket.broadcast.emit("data", data)
-    })
+        data = modifyAllCommands(_data, false);
+        socket.broadcast.emit("data", data);
+    });
     socket.on("start", (_data) => {
-        data = modifyAllCommands(_data, false)
-        socket.broadcast.emit("data", data)
-        handleData()
+        data = modifyAllCommands(_data, false);
+        socket.broadcast.emit("data", data);
+        handleData();
     });
     socket.on("set-settings", (_settings) => {
         settings = _settings;
@@ -279,7 +279,7 @@ io.on("connection", (socket) => {
         }
         if (process.platform == "linux" && settings.sync.gpioPin >= 0) {
             syncPin = new gpio(settings.sync.gpioPin, "out");
-            syncPin.write(settings.sync.gpioActive == "high" ? 0 : 1)
+            syncPin.write(settings.sync.gpioActive == "high" ? 0 : 1);
         } else {
             syncPin = undefined;
         }
@@ -292,9 +292,9 @@ io.on("connection", (socket) => {
 
 process.on('SIGINT', () => {
     if (syncPin) {
-        syncPin.unexport()
+        syncPin.unexport();
     }
-    process.exit(1)
+    process.exit(1);
 });
 
 server.listen(port);

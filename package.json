@@ -8,7 +8,7 @@
         "build": "cd public/dashboard && webpack",
         "minify": "uglifyjs -c -m --webkit ./public/dashboard/dist/bundle.js > ./public/dashboard/dist/bundle.js",
         "clean": "rm -rf ./server/dist/; rm -rf ./public/dashboard/dist",
-        "compile": "nexe --build ./server.js -r \"public/**/*.html\""
+        "compile": "nexe --build --verbose ./server/app.js -r \"public/**/*.html\""
     },
     "keywords": [],
     "author": "",

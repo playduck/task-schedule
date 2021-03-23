@@ -7,7 +7,7 @@ const app = express();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 const router = require("./router.js");
-const { exec } = require('child_process');
+const spawn  = require('child_process').spawn;
 const gpio = require('onoff').Gpio;
 
 const port = 3000;
@@ -161,7 +161,10 @@ function execCommand(index, data, command) {
     console.log(`Starting Command Execution ${data.id}`);
     writeStream(data.id, "Starting Execution\r\n");
     console.log(command);
-    const child = exec(command);
+    const command_split = command.split(" ");
+    const executable = command_split.shift();
+	console.log(">>>>", command_split, executable);
+    const child = spawn(executable, command_split );
     proceses[index] = (child);
 
     child.stdout.setEncoding('utf8');
@@ -236,9 +239,10 @@ function handleData() {
                         console.log("Ending Task", data[idx].id);
                         writeStream(data[idx].id, "Ending Task\r\n");
 
-                        proceses[idx].kill('SIGINT');
-                        proceses[idx].kill('SIGKILL');
-                        proceses[idx] = undefined;
+                        // proceses[idx].kill('SIGINT');
+                       	proceses[idx].kill('SIGKILL');
+                       // process[idx].kill();
+			proceses[idx] = undefined;
                         commandDone(idx);
                     }
                 }, (data[idx].end - data[idx].start));

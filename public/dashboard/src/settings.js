@@ -5,6 +5,7 @@ const settingsDom = document.getElementById("settings");
 function setSettings(_settings) {
     settingsDom.querySelector("#logs-save").checked = _settings.logging.logsSave;
     settingsDom.querySelector("#logs-stdout").checked = _settings.logging.logsStdout;
+    settingsDom.querySelector("#logs-delete-dl").checked = _settings.logging.deleteDl;
 
     // settingsDom.querySelector("#cloud-url").value = _settings.cloud.cloudURL;
     // settingsDom.querySelector("#cloud-name").value = _settings.cloud.cloudName;
@@ -20,7 +21,8 @@ function addSettingsEventListener(_socket) {
         const settings = {
             logging: {
                 logsSave: settingsDom.querySelector("#logs-save").checked,
-                logsStdout: settingsDom.querySelector("#logs-stdout").checked
+                logsStdout: settingsDom.querySelector("#logs-stdout").checked,
+                deleteDl: settingsDom.querySelector("#logs-delete-dl").checked
             },
             // cloud: {
             //     cloudURL: settingsDom.querySelector("#cloud-url").value,

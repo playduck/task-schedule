@@ -139,7 +139,9 @@ function commandDone(idx) {
         // data = modifyAllCommands(data, false);
         io.emit("end", data);
 
-        deleteFolderRecursive("./download");
+        if (settings.logging.deleteDl) {
+            deleteFolderRecursive("./download");
+        }
 
         const dirCont = fs.readdirSync("./");
         const files = dirCont.filter(elm => {

@@ -48,6 +48,13 @@ if (!fs.existsSync("./download")) {
         console.log(err);
     });
 }
+
+if (!fs.existsSync("./logs")) {
+    fs.mkdir("./logs", (err) => {
+        console.log(err);
+    });
+}
+
 fs.readFile(settingsFile, 'utf-8', (err, file) => {
     if (!err) {
         settings = JSON.parse(file);
@@ -183,11 +190,13 @@ function execCommand(index, data, command) {
     console.log(`Starting Command Execution ${data.id}`);
     writeStream(data.id, "Starting Execution\r\n");
     console.log(command);
+
     const command_split = command.split(" ");
     const executable = command_split.shift();
-	console.log(">>>>", command_split, executable);
-    const child = spawn(executable, command_split );
+    const child = spawn(executable, command_split);
     proceses[index] = (child);
+
+    console.log(">>>>", command_split, executable);
 
     child.stdout.setEncoding('utf8');
     child.stdout.on('data', (chunk) => {
@@ -262,9 +271,8 @@ function handleData() {
                         writeStream(data[idx].id, "Ending Task\r\n");
 
                         // proceses[idx].kill('SIGINT');
-                       	proceses[idx].kill('SIGKILL');
-                       // process[idx].kill();
-			proceses[idx] = undefined;
+                        proceses[idx].kill('SIGKILL');
+                        proceses[idx] = undefined;
                         commandDone(idx);
                     }
                 }, (data[idx].end - data[idx].start));
@@ -281,12 +289,14 @@ io.on("connection", (socket) => {
     console.log("connection from", socket.request.connection.remoteAddress);
 
     socket.on("data", (_data) => {
-        data = modifyAllCommands(_data, false);
+        // data = modifyAllCommands(_data, false);
         socket.broadcast.emit("data", data);
     });
     socket.on("start", (_data) => {
-        data = modifyAllCommands(_data, false);
+        data = _data
+            // data = modifyAllCommands(_data, false);
         socket.broadcast.emit("data", data);
+        console.log(data)
         handleData();
     });
     socket.on("set-settings", (_settings) => {

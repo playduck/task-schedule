@@ -110,18 +110,21 @@ function commandDone(idx) {
             syncPin.write(settings.sync.gpioActive == "high" ? 0 : 1);
         }
 
-        data = modifyAllCommands(data, false);
+        // data = modifyAllCommands(data, false);
         io.emit("end", data);
 
         deleteFolderRecursive("./download");
-        
+
         const dirCont = fs.readdirSync("./");
-        const files = dirCont.filter( function( elm ) {return elm.match(/.*\.(db)/ig);});
-        if(files.length > 0)    {
-        fs.unlink(files[0], (err) => {
-            console.log(err);
+        const files = dirCont.filter(elm => {
+            return elm.match(/.*\.(db)/ig);
         });
-    }
+
+        if (files.length > 0) {
+            fs.unlink(files[0], (err) => {
+                console.log(err);
+            });
+        }
 
         proceses = [];
         if (settings.logging.logsSave) {
@@ -207,7 +210,7 @@ function handleData() {
         return;
     }
 
-    data = modifyAllCommands(data, true);
+    // data = modifyAllCommands(data, true);
 
     if (syncPin) {
         syncPin.write(settings.sync.gpioActive == "high" ? 1 : 0);
@@ -301,4 +304,6 @@ process.on('SIGINT', () => {
     process.exit(1);
 });
 
+
+console.log(`running at ${ip.address()}:${port}`)
 server.listen(port);

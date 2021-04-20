@@ -7,8 +7,13 @@ const app = express();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 const router = require("./router.js");
-const spawn  = require('child_process').spawn;
-const gpio = require('onoff').Gpio;
+const ip = require("ip");
+const spawn = require('child_process').spawn;
+const { start } = require('repl');
+
+if (process.platform == "linux") {
+    const gpio = require('onoff').Gpio;
+}
 
 const port = 3000;
 const settingsFile = "settings.json";
@@ -47,6 +52,8 @@ fs.readFile(settingsFile, 'utf-8', (err, file) => {
     if (!err) {
         settings = JSON.parse(file);
         console.log(settings);
+
+        initilizeGPIO();
     }
 });
 
@@ -61,6 +68,18 @@ function deleteFolderRecursive(directory) {
             });
         }
     });
+}
+
+function initilizeGPIO() {
+    if (syncPin != undefined) {
+        syncPin.unexport();
+    }
+    if (process.platform == "linux" && settings.sync.gpioPin >= 0) {
+        syncPin = new gpio(settings.sync.gpioPin, "out");
+        syncPin.write(settings.sync.gpioActive == "high" ? 0 : 1);
+    } else {
+        syncPin = undefined;
+    }
 }
 
 function writeStream(id, message) {
@@ -281,15 +300,7 @@ io.on("connection", (socket) => {
             console.log("Saved settings");
         });
 
-        if (syncPin != undefined) {
-            syncPin.unexport();
-        }
-        if (process.platform == "linux" && settings.sync.gpioPin >= 0) {
-            syncPin = new gpio(settings.sync.gpioPin, "out");
-            syncPin.write(settings.sync.gpioActive == "high" ? 0 : 1);
-        } else {
-            syncPin = undefined;
-        }
+        initilizeGPIO();
 
     });
 

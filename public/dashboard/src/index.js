@@ -390,7 +390,7 @@ document.getElementById("add-custom").onclick = () => {
 
 document.getElementById("add-download").onclick = () => {
     addElement("download",
-        "nextcloudcmd --trust --user \"NEXTCLOUD_USERNAME\" --password \"NEXTCLOUD_PASSWORD\" ./download NEXTCLOUD_URL/download"
+        "wget https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4 -P ./download"
     );
 };
 

@@ -7,7 +7,7 @@
         "start": "node ./server/app.js",
         "build": "cd public/dashboard && webpack",
         "minify": "uglifyjs -c -m --webkit ./public/dashboard/dist/bundle.js > ./public/dashboard/dist/bundle.js",
-        "clean": "rm -rf ./server/dist/; rm -rf ./public/dashboard/dist",
+        "clean": "rm -rf ./server/dist/; rm -rf ./public/dashboard/dist; rm -r ./logs; rm -r ./download",
         "compile": "nexe --build --verbose ./server/app.js -r \"public/**/*.html\""
     },
     "keywords": [],
